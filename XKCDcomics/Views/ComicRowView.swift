@@ -10,6 +10,7 @@ import SwiftUI
 // Single comic row in list
 struct ComicRowView: View {
     let comic: Comic
+    let isFavorite: Bool
     
     var body: some View {
         HStack(spacing: 12) {
@@ -43,6 +44,12 @@ struct ComicRowView: View {
             
             Spacer()
             
+            // Favorite indicator
+            if isFavorite {
+                Image(systemName: "star.fill")
+                    .foregroundStyle(.yellow)
+                    .font(.title3)
+            }
            
         }
         .padding(.vertical, 4)

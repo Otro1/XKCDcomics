@@ -10,7 +10,8 @@ import SwiftUI
 // Full comic detail view
 struct ComicDetailView: View {
     let comic: Comic
-
+    @ObservedObject var favoritesViewModel: FavoritesViewModel
+    
     var comicURL: URL? {
         URL(string: "https://xkcd.com/\(comic.num)")
     }
@@ -48,6 +49,7 @@ struct ComicDetailView: View {
                 .frame(maxHeight: 500)
                 .padding()
 
+                
                 // description text
                 VStack(alignment: .leading, spacing: 8) {
                     Text(comic.alt)
@@ -58,6 +60,21 @@ struct ComicDetailView: View {
                 .padding()
                 .background(Color.secondary.opacity(0.1))
                 .cornerRadius(10)
+                .padding(.horizontal)
+                
+                // Favorite button
+                Button {
+                    favoritesViewModel.toggleFavorite(comic)
+                } label: {
+                    Label(
+                        favoritesViewModel.isFavorite(comic) ? "Unfavorite" : "Add to Favorites",
+                        systemImage: favoritesViewModel.isFavorite(comic) ? "star.fill" : "star"
+                    )
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                }
+                .buttonStyle(.bordered)
+                .tint(favoritesViewModel.isFavorite(comic) ? .yellow : .blue)
                 .padding(.horizontal)
 
             }

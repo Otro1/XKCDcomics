@@ -10,11 +10,25 @@ import SwiftData
 
 @main
 struct XKCDcomicsApp: App {
+    // Database setup
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema([
+            FavoriteComic.self,
+        ])
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+
+        do {
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        } catch {
+            fatalError("Could not create ModelContainer: \(error)")
+        }
+    }()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            // App entry point
+            ContentView(modelContext: sharedModelContainer.mainContext)
         }
-
+        .modelContainer(sharedModelContainer)
     }
 }

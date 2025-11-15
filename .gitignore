@@ -1,0 +1,63 @@
+# Xcode user settings
+xcuserdata/
+*.xcuserstate
+
+# Derived data
+DerivedData/
+*.hmap
+*.ipa
+
+# Build artifacts
+build/
+*.o
+*.linkfilelist
+*.dSYM
+*.dSYM.zip
+
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Accidental macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Swift Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Xcode iCloud debug logs
+*.xccheckout
+*.xcscmblueprint
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Xcode workspace
+*.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+
+# Xcode scheme management
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+
+# SPM artifact cache
+.artifactcache/
+
+# Simulator logs
+CoreSimulator/
+
+# SwiftData generated model containers
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
