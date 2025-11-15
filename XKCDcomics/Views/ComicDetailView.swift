@@ -6,16 +6,22 @@
 //
 
 import SwiftUI
+import SafariServices
 
 // Full comic detail view
 struct ComicDetailView: View {
     let comic: Comic
     @ObservedObject var favoritesViewModel: FavoritesViewModel
-    
+    @State private var showExplanation = false
+
     var comicURL: URL? {
         URL(string: "https://xkcd.com/\(comic.num)")
     }
 
+    var explainURL: URL? {
+        URL(string: "https://www.explainxkcd.com/wiki/index.php/\(comic.num)")
+    }
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -77,11 +83,38 @@ struct ComicDetailView: View {
                 .tint(favoritesViewModel.isFavorite(comic) ? .yellow : .blue)
                 .padding(.horizontal)
 
+                // Explain button
+                Button {
+                    showExplanation = true
+                } label: {
+                    Label("Explain Comic", systemImage: "questionmark.circle.fill")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                }
+                .buttonStyle(.borderedProminent)
+                .padding(.horizontal)
+                
             }
             .padding(.vertical)
         }
         .navigationTitle("Comic #\(comic.num)")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showExplanation) {
+            if let url = explainURL {
+                SafariView(url: url)
+            }
+        }
     }
 }
 
+// Safari web view wrapper
+struct SafariView: UIViewControllerRepresentable {
+    let url: URL
+    
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        SFSafariViewController(url: url)
+    }
+    
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {
+    }
+}
