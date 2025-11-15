@@ -10,7 +10,6 @@ import SwiftData
 
 @main
 struct XKCDcomicsApp: App {
-  
 
     var body: some Scene {
         WindowGroup {

@@ -11,5 +11,12 @@ import SwiftData
 struct ContentView: View {
 
     var body: some View {
+        TabView {
+            // Browse comics tab
+            ComicListView()
+                .tabItem {
+                    Label("Browse", systemImage: "book.fill")
+                }
+        }
     }
 }
