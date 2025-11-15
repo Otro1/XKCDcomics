@@ -44,7 +44,6 @@ struct ComicListView: View {
                                 )
                             }
                             .swipeActions(edge: .trailing) {
-
                                 // Favorite action
                                 Button {
                                     favoritesViewModel.toggleFavorite(comic)
@@ -61,6 +60,14 @@ struct ComicListView: View {
                                     favoritesViewModel.isFavorite(comic)
                                         ? .gray : .yellow
                                 )
+                                
+                                // Share action
+                                if let url = URL(string: "https://xkcd.com/\(comic.num)") {
+                                    ShareLink(item: url, subject: Text(comic.title), message: Text("Check out this xkcd comic: \(comic.title)")) {
+                                        Label("Share", systemImage: "square.and.arrow.up")
+                                    }
+                                    .tint(.blue)
+                                }
                             }
                         }
 

@@ -85,6 +85,15 @@ struct FavoritesView: View {
                                     .tint(.blue)
                                 }
                             }
+                            swipeActions(edge: .trailing) {
+                                // Share action
+                                if let url = URL(string: "https://xkcd.com/\(favorite.num)") {
+                                    ShareLink(item: url, subject: Text(favorite.title), message: Text("Check out this xkcd comic: \(favorite.title)")) {
+                                        Label("Share", systemImage: "square.and.arrow.up")
+                                    }
+                                    .tint(.blue)
+                                }
+                            }
                         }
                         .onDelete(perform: deleteFavorites)
                     }

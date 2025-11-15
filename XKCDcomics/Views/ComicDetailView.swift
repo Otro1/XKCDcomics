@@ -104,6 +104,15 @@ struct ComicDetailView: View {
                 SafariView(url: url)
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if let url = comicURL {
+                    ShareLink(item: url, subject: Text(comic.title), message: Text("Check out this xkcd comic: \(comic.title)")) {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                    }
+                }
+            }
+        }
     }
 }
 
