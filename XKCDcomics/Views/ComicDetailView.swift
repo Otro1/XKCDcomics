@@ -13,6 +13,13 @@ struct ComicDetailView: View {
     let comic: Comic
     @ObservedObject var favoritesViewModel: FavoritesViewModel
     @State private var showExplanation = false
+    let cachedImageData: Data?
+
+    init(comic: Comic, favoritesViewModel: FavoritesViewModel, cachedImageData: Data? = nil) {
+        self.comic = comic
+        self.favoritesViewModel = favoritesViewModel
+        self.cachedImageData = cachedImageData
+    }
 
     var comicURL: URL? {
         URL(string: "https://xkcd.com/\(comic.num)")
@@ -45,15 +52,24 @@ struct ComicDetailView: View {
                 .padding(.horizontal)
 
                 // Comic image
-                AsyncImage(url: URL(string: comic.img)) { image in
-                    image
+                if let imageData = cachedImageData,
+                   let uiImage = UIImage(data: imageData) {
+                    Image(uiImage: uiImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                } placeholder: {
-                    ProgressView()
+                        .frame(maxHeight: 500)
+                        .padding()
+                } else {
+                    AsyncImage(url: URL(string: comic.img)) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    } placeholder: {
+                        ProgressView()
+                    }
+                    .frame(maxHeight: 500)
+                    .padding()
                 }
-                .frame(maxHeight: 500)
-                .padding()
 
                 
                 // description text

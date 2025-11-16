@@ -20,6 +20,7 @@ final class FavoriteComic {
     var month: String
     var year: String
     var savedDate: Date
+    @Attribute(.externalStorage) var imageData: Data?
 
     init(
         num: Int,
@@ -29,7 +30,8 @@ final class FavoriteComic {
         transcript: String,
         day: String,
         month: String,
-        year: String
+        year: String,
+        imageData: Data? = nil
     ) {
         self.num = num
         self.title = title
@@ -40,10 +42,11 @@ final class FavoriteComic {
         self.month = month
         self.year = year
         self.savedDate = Date()
+        self.imageData = imageData
     }
 
     // Create from Comic struct
-    convenience init(from comic: Comic) {
+    convenience init(from comic: Comic, imageData: Data? = nil) {
         self.init(
             num: comic.num,
             title: comic.title,
@@ -52,7 +55,8 @@ final class FavoriteComic {
             transcript: comic.transcript,
             day: comic.day,
             month: comic.month,
-            year: comic.year
+            year: comic.year,
+            imageData: imageData
         )
     }
 

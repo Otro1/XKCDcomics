@@ -34,23 +34,35 @@ struct FavoritesView: View {
                             NavigationLink {
                                 ComicDetailView(
                                     comic: favorite.toComic(),
-                                    favoritesViewModel: favoritesViewModel
+                                    favoritesViewModel: favoritesViewModel,
+                                    cachedImageData: favorite.imageData
                                 )
                             } label: {
                                 HStack(spacing: 12) {
                                     // Thumbnail
-                                    AsyncImage(url: URL(string: favorite.img)) {
-                                        image in
-                                        image
+                                    if let imageData = favorite.imageData,
+                                       let uiImage = UIImage(data: imageData) {
+                                        Image(uiImage: uiImage)
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
-                                    } placeholder: {
-                                        ProgressView()
+                                            .frame(width: 60, height: 60)
+                                            .clipShape(
+                                                RoundedRectangle(cornerRadius: 8)
+                                            )
+                                    } else {
+                                        AsyncImage(url: URL(string: favorite.img)) {
+                                            image in
+                                            image
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                        } placeholder: {
+                                            ProgressView()
+                                        }
+                                        .frame(width: 60, height: 60)
+                                        .clipShape(
+                                            RoundedRectangle(cornerRadius: 8)
+                                        )
                                     }
-                                    .frame(width: 60, height: 60)
-                                    .clipShape(
-                                        RoundedRectangle(cornerRadius: 8)
-                                    )
 
                                     // Info
                                     VStack(alignment: .leading, spacing: 4) {
@@ -61,6 +73,12 @@ struct FavoritesView: View {
                                         Text("#\(favorite.num)")
                                             .font(.caption)
                                             .foregroundStyle(.secondary)
+                                        
+                                        if favorite.imageData == nil {
+                                            Text("Image not cached")
+                                                .font(.caption2)
+                                                .foregroundStyle(.orange)
+                                        }
                                     }
                                 }
                                 .padding(.vertical, 4)
@@ -83,16 +101,7 @@ struct FavoritesView: View {
                                         )
                                     }
                                     .tint(.blue)
-                                }
-                            }
-                            swipeActions(edge: .trailing) {
-                                // Share action
-                                if let url = URL(string: "https://xkcd.com/\(favorite.num)") {
-                                    ShareLink(item: url, subject: Text(favorite.title), message: Text("Check out this xkcd comic: \(favorite.title)")) {
-                                        Label("Share", systemImage: "square.and.arrow.up")
-                                    }
-                                    .tint(.blue)
-                                }
+                                }   
                             }
                         }
                         .onDelete(perform: deleteFavorites)
