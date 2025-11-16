@@ -28,6 +28,7 @@ struct XKCDcomicsApp: App {
         WindowGroup {
             // App entry point
             ContentView(modelContext: sharedModelContainer.mainContext)
+                .preferredColorScheme(.light)
         }
         .modelContainer(sharedModelContainer)
     }

@@ -17,103 +17,198 @@ struct FavoritesView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
-                // Empty state
-                if favorites.isEmpty {
-                    ContentUnavailableView(
-                        "No Favorites",
-                        systemImage: "star.slash",
-                        description: Text(
-                            "Comics you favorite will appear here"
+            VStack(spacing: 0) {
+                // Header
+                VStack(spacing: 8) {
+                    HStack {
+                        Text("Favorites")
+                            .font(.title)
+                            .bold()
+                        Spacer()
+
+                        if !favorites.isEmpty {
+                            EditButton()
+                        }
+                    }
+
+                    HStack {
+                        Text(
+                            "\(favorites.count) saved comic\(favorites.count == 1 ? "" : "s")"
                         )
-                    )
-                    // Favorites list
-                } else {
-                    List {
-                        ForEach(favorites) { favorite in
-                            NavigationLink {
-                                ComicDetailView(
-                                    comic: favorite.toComic(),
-                                    favoritesViewModel: favoritesViewModel,
-                                    cachedImageData: favorite.imageData
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        Spacer()
+                    }
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.white)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(Color.black, lineWidth: 0.6)
+                )
+                .padding(.horizontal)
+                .padding(.top)
+
+                VStack {
+                    Group {
+                        // Empty state
+                        if favorites.isEmpty {
+                            ContentUnavailableView(
+                                "No Favorites",
+                                systemImage: "star.slash",
+                                description: Text(
+                                    "Comics you favorite will appear here"
                                 )
-                            } label: {
-                                HStack(spacing: 12) {
-                                    // Thumbnail
-                                    if let imageData = favorite.imageData,
-                                       let uiImage = UIImage(data: imageData) {
-                                        Image(uiImage: uiImage)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 60, height: 60)
-                                            .clipShape(
-                                                RoundedRectangle(cornerRadius: 8)
-                                            )
-                                    } else {
-                                        AsyncImage(url: URL(string: favorite.img)) {
-                                            image in
-                                            image
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                        } placeholder: {
-                                            ProgressView()
-                                        }
-                                        .frame(width: 60, height: 60)
-                                        .clipShape(
-                                            RoundedRectangle(cornerRadius: 8)
+                            )
+                            // Favorites list
+                        } else {
+                            List {
+                                ForEach(favorites) { favorite in
+                                    NavigationLink {
+                                        ComicDetailView(
+                                            comic: favorite.toComic(),
+                                            favoritesViewModel:
+                                                favoritesViewModel,
+                                            cachedImageData: favorite.imageData
                                         )
+                                    } label: {
+                                        VStack(alignment: .leading, spacing: 8)
+                                        {
+                                            HStack(spacing: 12) {
+                                                // Thumbnail
+                                                if let imageData = favorite
+                                                    .imageData,
+                                                    let uiImage = UIImage(
+                                                        data: imageData
+                                                    )
+                                                {
+                                                    Image(uiImage: uiImage)
+                                                        .resizable()
+                                                        .aspectRatio(
+                                                            contentMode: .fill
+                                                        )
+                                                        .frame(
+                                                            width: 80,
+                                                            height: 80
+                                                        )
+                                                        .clipShape(
+                                                            RoundedRectangle(
+                                                                cornerRadius: 8
+                                                            )
+                                                        )
+                                                } else {
+                                                    AsyncImage(
+                                                        url: URL(
+                                                            string: favorite.img
+                                                        )
+                                                    ) {
+                                                        image in
+                                                        image
+                                                            .resizable()
+                                                            .aspectRatio(
+                                                                contentMode:
+                                                                    .fill
+                                                            )
+                                                    } placeholder: {
+                                                        ProgressView()
+                                                    }
+                                                    .frame(
+                                                        width: 80,
+                                                        height: 80
+                                                    )
+                                                    .clipShape(
+                                                        RoundedRectangle(
+                                                            cornerRadius: 8
+                                                        )
+                                                    )
+                                                }
+
+                                                // Info
+                                                VStack(
+                                                    alignment: .leading,
+                                                    spacing: 4
+                                                ) {
+                                                    Text(favorite.title)
+                                                        .font(.headline)
+                                                        .lineLimit(2)
+
+                                                    Text("#\(favorite.num)")
+                                                        .font(.caption)
+                                                        .foregroundStyle(
+                                                            .secondary
+                                                        )
+
+                                                    if favorite.imageData == nil
+                                                    {
+                                                        Text("Image not cached")
+                                                            .font(.caption2)
+                                                            .foregroundStyle(
+                                                                .orange
+                                                            )
+                                                    }
+                                                }
+
+                                                Spacer()
+                                            }
+                                        }
+                                        .padding(.vertical, 4)
                                     }
-
-                                    // Info
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(favorite.title)
-                                            .font(.headline)
-                                            .lineLimit(2)
-
-                                        Text("#\(favorite.num)")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                        
-                                        if favorite.imageData == nil {
-                                            Text("Image not cached")
-                                                .font(.caption2)
-                                                .foregroundStyle(.orange)
+                                    .listRowInsets(
+                                        EdgeInsets(
+                                            top: 8,
+                                            leading: 12,
+                                            bottom: 8,
+                                            trailing: 12
+                                        )
+                                    )
+                                    .swipeActions(edge: .trailing) {
+                                        // Share action
+                                        if let url = URL(
+                                            string:
+                                                "https://xkcd.com/\(favorite.num)"
+                                        ) {
+                                            ShareLink(
+                                                item: url,
+                                                subject: Text(favorite.title),
+                                                message: Text(
+                                                    "Check out this xkcd comic: \(favorite.title)"
+                                                )
+                                            ) {
+                                                Label(
+                                                    "Share",
+                                                    systemImage:
+                                                        "square.and.arrow.up"
+                                                )
+                                            }
+                                            .tint(.blue)
                                         }
                                     }
                                 }
-                                .padding(.vertical, 4)
+                                .onDelete(perform: deleteFavorites)
                             }
-                            .swipeActions(edge: .trailing) {
-                                // Share action
-                                if let url = URL(
-                                    string: "https://xkcd.com/\(favorite.num)"
-                                ) {
-                                    ShareLink(
-                                        item: url,
-                                        subject: Text(favorite.title),
-                                        message: Text(
-                                            "Check out this xkcd comic: \(favorite.title)"
-                                        )
-                                    ) {
-                                        Label(
-                                            "Share",
-                                            systemImage: "square.and.arrow.up"
-                                        )
-                                    }
-                                    .tint(.blue)
-                                }   
-                            }
+                            .listStyle(.plain)
+                            .scrollContentBackground(.hidden)
+                            .listRowBackground(Color.clear)
                         }
-                        .onDelete(perform: deleteFavorites)
                     }
                 }
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.white)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(Color.black, lineWidth: 0.6)
+                )
+                .padding(.horizontal)
+                .padding(.vertical, 10)
             }
-            .navigationTitle("Favorites")
-            .toolbar {
-                if !favorites.isEmpty {
-                    EditButton()
-                }
-            }
+            .navigationBarTitleDisplayMode(.inline)
+            .background(Color("BackgroundColor").ignoresSafeArea())
         }
     }
 
